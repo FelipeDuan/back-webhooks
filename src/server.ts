@@ -8,6 +8,7 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import { getWebhooks } from "./routes/get-webhooks";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -34,6 +35,8 @@ app.register(fastifySwagger, {
 app.register(ScalarApiReference, {
   routePrefix: "/docs",
 });
+
+app.register(getWebhooks);
 
 app.listen({ port: 3100, host: "0.0.0.0" }).then(() => {
   console.log("HTTP Server rodando em http://localhost:3100");

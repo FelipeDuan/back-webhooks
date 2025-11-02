@@ -8,9 +8,13 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import { env } from "./env";
 import { getWebhooks } from "./routes/get-webhooks";
+import { loggerConfig } from "./utils/logger";
 
-const app = fastify().withTypeProvider<ZodTypeProvider>();
+const app = fastify({
+  logger: loggerConfig,
+}).withTypeProvider<ZodTypeProvider>();
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
@@ -21,23 +25,33 @@ app.register(fastifyCors, {
   credentials: true,
 });
 
-app.register(fastifySwagger, {
-  openapi: {
-    info: {
-      title: "Webhook Inspector API",
-      description: "API para capturar e inspecionar requests de Webhooks",
-      version: "1.0.0",
+if (env.NODE_ENV === "dev") {
+  app.register(fastifySwagger, {
+    openapi: {
+      info: {
+        title: "Webhook Inspector API",
+        description: "API para capturar e inspecionar requests de Webhooks",
+        version: "1.0.0",
+      },
     },
-  },
-  transform: jsonSchemaTransform,
-});
+    transform: jsonSchemaTransform,
+  });
 
-app.register(ScalarApiReference, {
-  routePrefix: "/docs",
-});
+  app.register(ScalarApiReference, {
+    routePrefix: "/docs",
+  });
+}
 
 app.register(getWebhooks);
 
-app.listen({ port: 3100, host: "0.0.0.0" }).then(() => {
-  console.log("HTTP Server rodando em http://localhost:3100");
+app.listen({ port: env.PORT, host: "0.0.0.0" }, (err, address) => {
+  if (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+  console.log(`HTTP Server rodando em ${address}`);
+
+  if (env.NODE_ENV === "dev") {
+    console.log(`Docs disponiveis em ${address}/docs`);
+  }
 });

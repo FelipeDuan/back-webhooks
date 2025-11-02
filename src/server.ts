@@ -8,8 +8,8 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import { env } from "./env";
 import { getWebhooks } from "./routes/get-webhooks";
+import { env } from "./utils/env";
 import { loggerConfig } from "./utils/logger";
 
 const app = fastify({

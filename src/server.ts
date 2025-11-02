@@ -49,9 +49,8 @@ app.listen({ port: env.PORT, host: "0.0.0.0" }, (err, address) => {
     app.log.error(err);
     process.exit(1);
   }
-  console.log(`HTTP Server rodando em ${address}`);
 
   if (env.NODE_ENV === "dev") {
-    console.log(`Docs disponiveis em ${address}/docs`);
+    app.log.info(`Docs disponiveis em ${address}/docs`);
   }
 });

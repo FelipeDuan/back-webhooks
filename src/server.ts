@@ -8,6 +8,7 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import { captureWebhook } from "./routes/capture-webhook";
 import { deleteWebhook } from "./routes/delete-webhook";
 import { getWebhookById } from "./routes/get-webhook-by-id";
 import { getWebhooks } from "./routes/get-webhooks";
@@ -47,6 +48,7 @@ if (env.NODE_ENV === "dev") {
 app.register(getWebhooks);
 app.register(getWebhookById);
 app.register(deleteWebhook);
+app.register(captureWebhook);
 
 app.listen({ port: env.PORT, host: "0.0.0.0" }, (err, address) => {
   if (err) {

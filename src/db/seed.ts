@@ -106,7 +106,7 @@ function generateWebhook() {
     },
   };
 
-  const body = JSON.stringify(bodyObj);
+  const body = JSON.stringify(bodyObj, null, 2);
 
   const statusCode = weightedChoice(statusCodes, weights);
   const pathname = `/webhooks/${provider}`;
@@ -127,6 +127,8 @@ function generateWebhook() {
 
 async function seed() {
   console.log("🌱 Seeding database...");
+
+  await db.delete(webhooks);
 
   const data = Array.from({ length: 100 }, () => generateWebhook());
 

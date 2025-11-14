@@ -10,6 +10,7 @@ import {
 } from "fastify-type-provider-zod";
 import { captureWebhook } from "./routes/capture-webhook";
 import { deleteWebhook } from "./routes/delete-webhook";
+import { generateHandler } from "./routes/generate-handler";
 import { getWebhookById } from "./routes/get-webhook-by-id";
 import { getWebhooks } from "./routes/get-webhooks";
 import { env } from "./utils/env";
@@ -49,6 +50,7 @@ app.register(getWebhooks);
 app.register(getWebhookById);
 app.register(deleteWebhook);
 app.register(captureWebhook);
+app.register(generateHandler);
 
 app.listen({ port: env.PORT, host: "0.0.0.0" }, (err, address) => {
   if (err) {

@@ -27,6 +27,8 @@ COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install --prod --frozen-lockfile
 
+COPY . .
+
 COPY --from=builder /app/dist ./dist
 
 RUN addgroup -S app && adduser -S app -G app

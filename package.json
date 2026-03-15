@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/server.ts",
     "start": "node dist/server.js",
+    "build": "tsc --project tsconfig.json",
     "format": "biome format --write",
     "db:init": "docker compose up -d",
     "db:stop": "docker compose stop",

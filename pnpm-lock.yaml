@@ -29,6 +29,9 @@ importers:
       ai:
         specifier: ^5.0.89
         version: 5.0.89(zod@4.1.12)
+      drizzle-kit:
+        specifier: ^0.31.6
+        version: 0.31.6
       drizzle-orm:
         specifier: ^0.44.7
         version: 0.44.7(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(pg@8.16.3)
@@ -69,9 +72,6 @@ importers:
       '@types/pg':
         specifier: ^8.15.6
         version: 8.15.6
-      drizzle-kit:
-        specifier: ^0.31.6
-        version: 0.31.6
       tsc-alias:
         specifier: ^1.8.10
         version: 1.8.16

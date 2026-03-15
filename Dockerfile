@@ -36,5 +36,5 @@ USER app
 
 EXPOSE 3100
 
-CMD ["node", "dist/server.js"]
+CMD ["pnpm", "start"]
 

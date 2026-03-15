@@ -100,6 +100,7 @@ NODE_ENV=dev
 PORT=3100
 DATABASE_URL=postgresql://docker:docker@localhost:5432/webhooks
 GOOGLE_GENERATIVE_AI_API_KEY=sua_chave_api_aqui
+FRONT_ORIGINS=http://localhost:3000
 ```
 
 4. **Inicie o banco de dados**:
@@ -193,12 +194,19 @@ A tabela `webhooks` armazena:
 
 ## 🔐 Variáveis de Ambiente
 
-| Variável                       | Descrição                            | Obrigatório | Padrão |
-| ------------------------------ | ------------------------------------ | ----------- | ------ |
-| `NODE_ENV`                     | Ambiente de execução (dev/prod/test) | Não         | `dev`  |
-| `PORT`                         | Porta do servidor                    | Não         | `3100` |
-| `DATABASE_URL`                 | URL de conexão do PostgreSQL         | Sim         | -      |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Chave da API do Google Gemini        | Sim         | -      |
+| Variável                       | Descrição                                                              | Obrigatório | Padrão               |
+| ------------------------------ | ---------------------------------------------------------------------- | ----------- | -------------------- |
+| `NODE_ENV`                     | Ambiente de execução (dev/prod/test)                                   | Não         | `dev`                |
+| `PORT`                         | Porta do servidor                                                      | Não         | `3100`               |
+| `DATABASE_URL`                 | URL de conexão do PostgreSQL                                           | Sim         | -                    |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Chave da API do Google Gemini                                          | Sim         | -                    |
+| `FRONT_ORIGINS`                | Origens permitidas para acessar rotas `/api/*` (lista separada por ,) | Não         | `http://localhost:3000` |
+
+## 🛡️ Segurança em Produção
+
+- Rate limiting global configurado com `@fastify/rate-limit` (200 requisições por minuto por IP).
+- O endpoint `/capture/*` é público para receber webhooks de qualquer origem.
+- As rotas `/api/*` (listagem, visualização, deleção e geração de handlers) só aceitam chamadas de browsers cujo `Origin` esteja em `FRONT_ORIGINS`. Chamadas sem header `Origin` (ex.: `curl`, outros backends) continuam permitidas.
 
 ## 📝 Notas de Desenvolvimento
 

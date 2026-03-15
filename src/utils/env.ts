@@ -5,6 +5,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3100),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
   DATABASE_URL: z.url(),
+  FRONT_ORIGINS: z.string().default("http://localhost:3000"),
 });
 
 export const env = envSchema.parse(process.env);

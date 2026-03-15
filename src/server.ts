@@ -1,6 +1,7 @@
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import ScalarApiReference from "@scalar/fastify-api-reference";
+import rateLimit from "@fastify/rate-limit";
 import { fastify } from "fastify";
 import {
   jsonSchemaTransform,
@@ -23,10 +24,37 @@ const app = fastify({
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
+app.register(rateLimit, {
+  max: 200,
+  timeWindow: "1 minute",
+});
+
 app.register(fastifyCors, {
   origin: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   credentials: true,
+});
+
+const dashboardAllowedOrigins = env.FRONT_ORIGINS.split(",").map(
+  (origin) => origin.trim(),
+);
+
+// Restringe origem apenas para rotas /api/* (lista, delete, handlers)
+app.addHook("preHandler", async (request, reply) => {
+  if (!request.url.startsWith("/api/")) {
+    return;
+  }
+
+  const origin = request.headers.origin;
+
+  // Permite clients sem Origin (ex: curl, scripts internos)
+  if (!origin) {
+    return;
+  }
+
+  if (!dashboardAllowedOrigins.includes(origin)) {
+    reply.status(403).send({ message: "Origin not allowed" });
+  }
 });
 
 if (env.NODE_ENV === "dev") {

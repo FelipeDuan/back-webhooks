@@ -36,5 +36,5 @@ USER app
 
 EXPOSE 3100
 
-CMD ["node", "-r", "tsconfig-paths/register", "dist/server.js"]
+CMD ["node", "dist/server.js"]
 

@@ -1,0 +1,57 @@
+# Testes de API – Backend Webhooks
+# Base URL: produção (Dokploy). Troque para http://localhost:3100 para testar local.
+@baseUrl = https://back-webhooks.felipeduan.com
+# ID de um webhook existente (preencha após criar um via POST /capture/...)
+@webhookId = 00000000-0000-0000-0000-000000000000
+
+### ========== 1. CAPTURE (público – qualquer origem) ==========
+
+### 1.1 POST – simula webhook de pagamento
+POST {{baseUrl}}/capture/payment/webhook
+Content-Type: application/json
+
+{
+  "event": "payment.completed",
+  "amount": 99.90,
+  "currency": "BRL"
+}
+
+### 1.2 GET – simula callback/redirect
+GET {{baseUrl}}/capture/oauth/callback?code=abc123&state=xyz
+
+### 1.3 POST – body vazio (só headers)
+POST {{baseUrl}}/capture/health/ping
+Content-Type: application/json
+
+
+### ========== 2. API WEBHOOKS (sem Origin = permitido; com Origin = precisa estar em FRONT_ORIGINS) ==========
+
+### 2.1 Listar webhooks (default limit=20)
+GET {{baseUrl}}/api/webhooks
+
+### 2.2 Listar com limit e cursor
+GET {{baseUrl}}/api/webhooks?limit=5&cursor=
+
+### 2.3 Buscar um webhook por ID (substitua @webhookId por um ID real da listagem)
+GET {{baseUrl}}/api/webhooks/{{webhookId}}
+
+### 2.4 Deletar webhook por ID (substitua pelo ID real)
+DELETE {{baseUrl}}/api/webhooks/{{webhookId}}
+
+### ========== 3. GERAR HANDLER (POST com webhookIds) ==========
+
+### 3.1 Gerar código – array de IDs (substitua por IDs reais retornados em GET /api/webhooks)
+POST {{baseUrl}}/api/generate
+Content-Type: application/json
+
+{
+  "webhookIds": ["{{webhookId}}"]
+}
+
+### ========== 4. SANITY / HEALTH ==========
+
+### 4.1 Raiz (pode retornar 404 – só para ver se o servidor responde)
+GET {{baseUrl}}/
+
+### 4.2 Rate limit – muitas requisições em 1 min podem retornar 429
+# GET {{baseUrl}}/api/webhooks
